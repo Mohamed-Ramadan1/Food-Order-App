@@ -55,7 +55,7 @@ const AvilableMeals = () => {
         key={meal.id}
         name={meal.name}
         description={meal.description} 
-        price={meal.price}
+        price={meal.price} 
     />)
     return (
         <section className={styles.meals}>
