@@ -7,7 +7,9 @@ import Checkout from "./Checkout";
 
 
 const Cart = props => {
-    const[isCheackout,setisCheackout]=useState(false)
+    const [isCheackout, setisCheackout] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [didSubmit, setDidSubmit] = useState(false);
     const cartCtx = useContext(CartContext);
     console.log(cartCtx.totoalAmount)
     const totalAmount = `$${cartCtx.totoalAmount.toFixed(2)}`;
@@ -15,12 +17,27 @@ const Cart = props => {
 
     const cartItemRemoveHandler = id => {
         cartCtx.removeItem(id)
-    }
+    };
     const cartItemAddHandler = item => {
-        cartCtx.addItem({...item,amount:1})
-    }
+        cartCtx.addItem({ ...item, amount: 1 })
+    };
     const orderHandler = () => {
         setisCheackout(true)
+    };
+
+    const submitOrderHandler =async(userData) => {
+        setIsSubmitting(true);
+            await fetch("https://food-order-app-e13f9-default-rtdb.firebaseio.com/orders.json", {
+            method: 'POST',
+            body: JSON.stringify({
+                user: userData,
+                orderItems: cartCtx.items,
+            }),
+        });
+
+        setIsSubmitting(false);
+        setDidSubmit(true);
+        cartCtx.clearCart();
     }
 
     const cartItems =
@@ -37,25 +54,38 @@ const Cart = props => {
             }
         </ul>
     
-const modalAction= <div className={styles.actions}>
-                <button className={styles['button--alt']} onClick={ props.onHideCart}>Close</button>
-                {hasItems&&<button className={styles.button} onClick={orderHandler}>Order</button>}
-    </div>
+    const modalAction = <div className={styles.actions}>
+        <button className={styles['button--alt']} onClick={props.onHideCart}>Close</button>
+        {hasItems && <button className={styles.button} onClick={orderHandler}>Order</button>}
+    </div>;
     
 
-    return (
-        <Modal onHideCart={props.onHideCart}>
+    const cardModalContent =
+        <>
             {cartItems}
-
             <div className={styles.total}>
                 <span>Total Amount</span>
                 <span>{totalAmount}</span>
             </div>
-            {isCheackout && <Checkout onCancel={props.onHideCart} />}
+            {isCheackout && <Checkout onConfirm={submitOrderHandler} onCancel={props.onHideCart} />}
             {!isCheackout && modalAction}
 
+        </>;
+    
+    const isSubmitingOrderData = <p>Sending order data...</p>;
+    const didSubmitDataContent = <>
+        <p>Successfully sent the order!</p>
+        <div className={styles.actions}>
+            <button className={styles.button} onClick={props.onHideCart}>Close</button>
+        </div>
 
-        
+    
+    </>;
+    return (
+        <Modal onHideCart={props.onHideCart}>
+            {!isSubmitting &&!didSubmit&& cardModalContent}
+            {isSubmitting && isSubmitingOrderData}
+            {!isSubmitting&&didSubmit&&didSubmitDataContent}
         </Modal>
     );
 }
