@@ -1,4 +1,5 @@
-import classes from './Checkout.module.css'
+import classes from './Checkout.module.css';
+
 const Checkout = (props) => {
     const confirmHandler = (event) => {
         event.preventDefault();
@@ -30,6 +31,6 @@ const Checkout = (props) => {
         </div>
         </form>
     );
-    };
+};
 
 export default Checkout;

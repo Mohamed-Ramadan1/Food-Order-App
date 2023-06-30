@@ -1,11 +1,13 @@
-import React,{useContext} from "react";
+import React,{useContext,useState} from "react";
 import styles from './Cart.module.css';
 import Modal from "../UI/Modal";
 import CartContext from "../../store/cart-context";
 import CartItem from "./CartItem";
+import Checkout from "./Checkout";
 
 
 const Cart = props => {
+    const[isCheackout,setisCheackout]=useState(false)
     const cartCtx = useContext(CartContext);
     console.log(cartCtx.totoalAmount)
     const totalAmount = `$${cartCtx.totoalAmount.toFixed(2)}`;
@@ -16,6 +18,9 @@ const Cart = props => {
     }
     const cartItemAddHandler = item => {
         cartCtx.addItem({...item,amount:1})
+    }
+    const orderHandler = () => {
+        setisCheackout(true)
     }
 
     const cartItems =
@@ -31,6 +36,12 @@ const Cart = props => {
                 />)
             }
         </ul>
+    
+const modalAction= <div className={styles.actions}>
+                <button className={styles['button--alt']} onClick={ props.onHideCart}>Close</button>
+                {hasItems&&<button className={styles.button} onClick={orderHandler}>Order</button>}
+    </div>
+    
 
     return (
         <Modal onHideCart={props.onHideCart}>
@@ -40,12 +51,11 @@ const Cart = props => {
                 <span>Total Amount</span>
                 <span>{totalAmount}</span>
             </div>
+            {isCheackout && <Checkout onCancel={props.onHideCart} />}
+            {!isCheackout && modalAction}
 
-            <div className={styles.actions}>
-                <button className={styles['button--alt']} onClick={ props.onHideCart}>Close</button>
-                {hasItems&&<button className={styles.button} >Order</button>}
 
-            </div>
+        
         </Modal>
     );
 }
