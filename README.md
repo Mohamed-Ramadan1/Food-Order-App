@@ -5,6 +5,7 @@ The Food Order App is a React application that allows users to conveniently orde
 ## Installation
 
 1-Clone this repository to your local machine: on terminal
+
 https://github.com/Mohamed-Ramadan1/Food-Order-App.git
 
 2- run : npm install
