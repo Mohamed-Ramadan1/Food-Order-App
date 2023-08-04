@@ -13,6 +13,7 @@ const Checkout = (props) => {
     postalCode: true,
   });
 
+  da;
   const nameInputRef = useRef();
   const streetInputRef = useRef();
   const postalCodeInputRef = useRef();
